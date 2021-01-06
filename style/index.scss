@@ -1,0 +1,100 @@
+@function px2rem($px) {
+  $rem: 37.5px;
+  @return ($px / $rem) + rem;
+}
+
+html {
+  background-color: #f8f8f8;
+}
+
+.header {
+  height: px2rem(40px);
+  width: 100%;
+  background-color: red;
+  .header-content {
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    .header-item {
+      float: left;
+      color: #ffcdce;
+      font-size: px2rem(16px);
+
+      &:nth-child(2) {
+        color: #fff;
+        font-size: px2rem(17px);
+      }
+    }
+  }
+}
+
+.banner-content {
+  position: relative;
+  .banner {
+    display: block;
+    width: 100%;
+    height: px2rem(190px);
+  }
+  .banner-title {
+    position: absolute;
+    left: px2rem(15px);
+    bottom: px2rem(15px);
+    font-size: px2rem(16px);
+    color: #fff;
+  }
+}
+
+.news-content {
+  .news-item {
+    width: 100%;
+    box-sizing: border-box;
+    height: px2rem(110px);
+    padding: px2rem(10px) px2rem(15px);
+  }
+  .news-inner {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    border-bottom: px2rem(1px) solid #e5e5e5;
+    .news-img {
+      float: left;
+      display: block;
+      margin-top: px2rem(10px);
+      width: px2rem(95px);
+      height: px2rem(70px);
+      margin-right: px2rem(15px);
+    }
+    .news-title {
+      color: #404040;
+      font-size: px2rem(17px);
+      margin-top: px2rem(16px);
+      line-height: px2rem(20px);
+    }
+    .time {
+      position: absolute;
+      left: px2rem(105px);
+      bottom: px2rem(15px);
+      color: #888;
+      font-size: px2rem(12px);
+    }
+    .num {
+      position: absolute;
+      right: px2rem(5px);
+      bottom: px2rem(15px);
+      color: #888;
+      font-size: px2rem(12px);
+      &::before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        background-size: contain;
+        background-image: url('../images/read-icon.jpg');
+        width: px2rem(21px);
+        height: px2rem(20px);
+        top: px2rem(-1px);
+        left: px2rem(-30px);
+      }
+    }
+  }
+}
