@@ -1,4 +1,4 @@
-# [Typescript 封装播放器组件](https://www.imooc.com/learn/1243)
+# Typescript 封装播放器组件
 
 ```
 # 安装依赖
