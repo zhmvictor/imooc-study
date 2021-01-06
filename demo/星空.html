@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>星空</title>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const cxt = canvas.getContext('2d');
+      canvas.width = 800;
+      canvas.height = 800;
+
+      // 黑色夜空背景
+      cxt.fillStyle = 'black';
+      cxt.fillRect(0, 0, canvas.width, canvas.height);
+
+      for(let i = 0; i < 200; i++) {
+        // r: 10 ~ 20
+        let r = Math.random() * 10 + 10;
+        let x = Math.random() * canvas.width;
+        let y = Math.random() * canvas.height;
+        let a = Math.random() * 360;
+        drwaStar(cxt, r/2.0, r, x, y, a);
+      }
+    }
+
+    function drwaStar(cxt, r, R, offsetX, offsetY, rotate = 0) {
+      cxt.beginPath();
+      for(let i = 0; i < 5; i++) {
+        // 假定大圆半径R，小圆半径是r
+        // 角度转弧度制
+        // 大圆初始角度 18 度，小圆初始角度 54 度，相邻角度差 72 度
+        // 不加偏移量时，在画布上默认起点是(0, 0)点，加上偏移量将五角星画在画布中间
+        cxt.lineTo(Math.cos((18 + i * 72 - rotate) / 180 * Math.PI) * R + offsetX,
+                  -Math.sin((18 + i * 72 - rotate) / 180 * Math.PI) * R + offsetY);
+        cxt.lineTo(Math.cos((54 + i * 72 - rotate) / 180 * Math.PI) * r + offsetX,
+                  -Math.sin((54 + i * 72 - rotate) / 180 * Math.PI) * r + offsetY);  
+      }
+      cxt.closePath();
+
+      cxt.lineWidth = 3;
+      cxt.strokeStyle = '#fd5';
+      cxt.fillStyle = '#fd3';
+      cxt.lineJoin = 'round';
+
+      cxt.fill();
+      cxt.stroke();
+    }
+  </script>
+</body>
+</html>

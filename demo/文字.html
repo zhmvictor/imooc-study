@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文字</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;"></canvas>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const cxt = canvas.getContext('2d');
+      canvas.width = 800;
+      canvas.height = 800;
+
+
+      // 文字填充
+      cxt.font = 'bold 40px Arial';
+      cxt.fillStyle = '#058';
+      cxt.fillText('Hello World！', 40, 100);
+
+      // 文字描边
+      cxt.lineWidth = 2;
+      cxt.strokeStyle = '#058';
+      cxt.strokeText('Hello World！', 40, 200);
+
+      // 像素压缩
+      cxt.fillText('Hello World！', 40, 300, 100);
+      cxt.strokeText('Hello World！', 40, 400, 100);
+
+      // 渐变文字
+      let linearGrad = cxt.createLinearGradient(0, 0, 800, 0);
+      linearGrad.addColorStop(0.0, 'red');
+      linearGrad.addColorStop(0.25, 'orange');
+      linearGrad.addColorStop(0.5, 'yellow');
+      linearGrad.addColorStop(0.75, 'green');
+      linearGrad.addColorStop(1.0, 'blue');
+      cxt.fillStyle = linearGrad;
+      cxt.fillText('Hello World 你好世界，我很开心，谢谢！', 40, 500);
+
+      // 用其他方式（图片等）填充文字
+      let backgroundImage = new Image();
+      backgroundImage.src = './image/brick.png';
+      backgroundImage.onload = function() {
+        let pattern = cxt.createPattern(backgroundImage, 'repeat');
+        cxt.fillStyle = pattern;
+        cxt.font = 'bold 100px Arial';
+        cxt.fillText('Canvas!', 40, 600);
+        cxt.strokeText('Canvas!', 40, 600);
+      }
+    }
+
+  </script>
+</body>
+</html>

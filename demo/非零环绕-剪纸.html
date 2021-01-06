@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>非零环绕原则</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;"></canvas>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const cxt = canvas.getContext('2d');
+      canvas.width = 800;
+      canvas.height = 800;
+
+      cxt.beginPath();
+      cxt.rect(100, 100, 600, 600);
+      pathRect(cxt, 200, 200, 400, 200);
+      pathTriangle(cxt, 300, 450, 150, 650, 450, 650);
+      cxt.arc(550, 550, 100, 0, Math.PI * 2, true);
+      cxt.closePath();
+
+      cxt.fillStyle = '#058';
+      cxt.shadowColor = 'gray';
+      cxt.shadowOffsetX = 10;
+      cxt.shadowOffsetY = 10;
+      cxt.shadowBlur = 10;
+      cxt.fill();
+    }
+
+    function pathRect(cxt, x, y, width, height) {
+      cxt.moveTo(x, y);
+      cxt.lineTo(x, y + height);
+      cxt.lineTo(x + width, y + height);
+      cxt.lineTo(x + width, y);
+      cxt.lineTo(x, y);
+    }
+
+    function pathTriangle(cxt, x1, y1, x2, y2, x3, y3) {
+      cxt.moveTo(x1, y1);
+      cxt.lineTo(x2, y2);
+      cxt.lineTo(x3, y3);
+      cxt.lineTo(x1, y1);
+    }
+  </script>
+</body>
+</html>

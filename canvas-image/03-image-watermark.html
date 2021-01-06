@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>离屏canvas-水印</title>
+  <style>
+    #canvas {
+      display: block;
+      margin: 0 auto;
+      border: 1px solid #aaa;
+    }
+    #scale-range {
+      display: block;
+      margin: 20px auto;
+      width: 800px;
+    }
+  </style>
+</head>
+<body style="background: black;">
+  <canvas id="canvas">
+    Your browser does not support the canvas element.
+  </canvas>
+  <!-- 滑动杆 -->
+  <input type="range" id="scale-range" min="0.5" max="3.0" step="0.01" value="1.0" >
+  <canvas id="watermark-canvas" style="display: none;">
+    Your browser does not support the canvas element.
+  </canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const cxt = canvas.getContext('2d');
+    const slider = document.getElementById('scale-range');
+    const img = new Image();
+
+    // 水印
+    const watermarkCanvas = document.getElementById('watermark-canvas');
+    const watermarkCxt = watermarkCanvas.getContext('2d');
+
+    window.onload = function() {
+      canvas.width = 600;
+      canvas.height = 400;
+
+      let scale = slider.value;
+
+      img.src = '../image/code.png';
+      img.onload = function() {
+        drawIamgeByScale(scale);
+        slider.onmousemove = function() {
+          scale = slider.value;
+          drawIamgeByScale(scale);
+        }
+      }
+
+      // setup watermark canvas
+      setupWatermark();
+    }
+
+    function drawIamgeByScale(scale) {
+      let imgWidth = img.width * scale;
+      let imgHeight = img.height * scale;
+
+      let dx = (canvas.width - imgWidth) / 2;
+      let dy = (canvas.height- imgHeight) / 2;
+
+      cxt.clearRect(0, 0, canvas.width, canvas.height);
+      cxt.drawImage(img, dx, dy, imgWidth, imgHeight);
+      // 绘制水印，放在canvas右下角
+      cxt.drawImage(watermarkCanvas, canvas.width - watermarkCanvas.width, canvas.height - watermarkCanvas.height);
+    }
+
+    function setupWatermark() {
+      watermarkCanvas.width = 300;
+      watermarkCanvas.height = 100;
+
+      watermarkCxt.font = 'bold 50px Arial';
+      watermarkCxt.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      watermarkCxt.textBaseline = 'middle';
+      watermarkCxt.fillText('watermark', 20, 50);
+    }
+  </script>
+</body>
+</html>

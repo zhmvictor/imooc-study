@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>像素处理-滤镜</title>
+  <script src="../base64.js"></script>
+  <style>
+    #canvasA, #canvasB {
+      margin: 0 auto;
+      border: 1px solid #aaa;
+    }
+  </style>
+</head>
+<body>
+  <div style="margin: 20px auto; width: 1700px;">
+    <canvas id="canvasA" width="800" height="560"></canvas>
+    <canvas id="canvasB" width="800" height="560"></canvas>
+  </div>
+  <div style="text-align: center; margin-top: 50px; font-size: 20px;">
+    <!-- 灰度滤镜 -->
+    <a href="javascript: greyEffect()">Grey Effect</a>
+    <!-- 黑白滤镜 -->
+    <a href="javascript: blackEffect()">Black&white Effect</a>
+    <!-- 反色滤镜 -->
+    <a href="javascript: reverseEffect()">Reverse Effect</a>
+    <!-- 模糊滤镜 -->
+    <a href="javascript: blurEffect()">Blur Effect</a>
+    <!-- 马赛克滤镜 -->
+    <a href="javascript: mosaiEffect()">Mosai Effect</a>
+  </div>
+
+  <script>
+    const canvasA = document.getElementById('canvasA');
+    const cxtA = canvasA.getContext('2d');
+
+    const canvasB = document.getElementById('canvasB');
+    const cxtB = canvasB.getContext('2d');
+
+    const img = new Image();
+
+    window.onload = function() {
+      img.src = autumnStr;
+      img.onload = function() {
+        cxtA.drawImage(img, 0, 0, canvasA.width, canvasA.height);
+      }
+    }
+
+    function greyEffect() {
+      let imageData = cxtA.getImageData(0, 0, canvasA.width, canvasA.height);
+      // 像素数据
+      let pixelData = imageData.data;
+      for(let i = 0; i < canvasB.width * canvasB.height; i++) {
+        // 0~3: r,g,b,a
+        let r = pixelData[4*i+0];
+        let g = pixelData[4*i+1];
+        let b = pixelData[4*i+2];
+        let a = pixelData[4*i+3];
+
+        // 灰度计算公式
+        let grey = r*0.3 + g*0.59 + b*0.11;
+
+        pixelData[4*i+0] = grey;
+        pixelData[4*i+1] = grey;
+        pixelData[4*i+2] = grey;
+      }
+      cxtB.putImageData(imageData, 0, 0, 0, 0, canvasB.width, canvasB.height);
+    }
+
+    /**
+     * 黑白滤镜：
+     * 图片上没有灰度，只有黑白，要么rgb全0，要么rgb全255
+     */
+    function blackEffect() {
+      let imageData = cxtA.getImageData(0, 0, canvasA.width, canvasA.height);
+      // 像素数据
+      let pixelData = imageData.data;
+      for(let i = 0; i < canvasB.width * canvasB.height; i++) {
+        // 0~3: r,g,b,a
+        let r = pixelData[4*i+0];
+        let g = pixelData[4*i+1];
+        let b = pixelData[4*i+2];
+        let a = pixelData[4*i+3];
+        // 灰度计算公式
+        let grey = r*0.3 + g*0.59 + b*0.11;
+        let value;
+        if(grey > 255 / 2) {
+          value = 255;
+        } else {
+          value = 0;
+        }
+
+        pixelData[4*i+0] = value;
+        pixelData[4*i+1] = value;
+        pixelData[4*i+2] = value;
+      }
+      cxtB.putImageData(imageData, 0, 0, 0, 0, canvasB.width, canvasB.height);
+    }
+
+    /**
+     * 反色滤镜：
+     * 图片上每个像素值修改为 255-值
+     */
+     function reverseEffect() {
+      let imageData = cxtA.getImageData(0, 0, canvasA.width, canvasA.height);
+      // 像素数据
+      let pixelData = imageData.data;
+      for(let i = 0; i < canvasB.width * canvasB.height; i++) {
+        // 0~3: r,g,b,a
+        let r = pixelData[4*i+0];
+        let g = pixelData[4*i+1];
+        let b = pixelData[4*i+2];
+        let a = pixelData[4*i+3];
+
+        pixelData[4*i+0] = 255 - r;
+        pixelData[4*i+1] = 255 - g;
+        pixelData[4*i+2] = 255 - b;
+      }
+      cxtB.putImageData(imageData, 0, 0, 0, 0, canvasB.width, canvasB.height);
+    }
+
+    /**
+     * 模糊滤镜：
+     * 扫描每个像素点时需要参考其周围的像素点
+     */
+     function blurEffect() {
+      let tempImageData = cxtA.getImageData(0, 0, canvasA.width, canvasA.height);
+      let tempPixelData = tempImageData.data;
+
+      let imageData = cxtA.getImageData(0, 0, canvasA.width, canvasA.height);
+      let pixelData = imageData.data;
+
+      // 模糊半径，改变模糊程度
+      let blurR = 3;
+      let totalNum = (2*blurR + 1)**2;
+
+      for(let i = blurR; i < canvasB.height - blurR; i++) {
+        for(let j = blurR; j < canvasB.width - blurR; j++) {
+          let totalr = 0, totalg = 0, totalb = 0;
+          // 计算 p 的blurR半径范围的点
+          for(let dx = -blurR; dx <= blurR; dx++) {
+            for(let dy = -blurR; dy <= blurR; dy++) {
+              let x = i + dx;
+              let y = j + dy;
+
+              let p = x * canvasB.width + y;
+              totalr += tempPixelData[4*p+0];
+              totalg += tempPixelData[4*p+1];
+              totalb += tempPixelData[4*p+2];
+            }
+          }
+          let p = i * canvasB.width + j;
+          pixelData[4*p+0] = totalr / totalNum;
+          pixelData[4*p+1] = totalg / totalNum;
+          pixelData[4*p+2] = totalb / totalNum;  
+        }
+      }
+
+      cxtB.putImageData(imageData, 0, 0, 0, 0, canvasB.width, canvasB.height);
+    }
+
+    /**
+     * 马赛克滤镜，与模糊滤镜的区别：
+     * 模糊滤镜是把当前点像素值设为周围区域像素的平均值
+     * 马赛克滤镜是把当前区域的全部像素点的值设为当前区域的平均值
+     */
+     function mosaiEffect() {
+      let tempImageData = cxtA.getImageData(0, 0, canvasA.width, canvasA.height);
+      let tempPixelData = tempImageData.data;
+
+      let imageData = cxtA.getImageData(0, 0, canvasA.width, canvasA.height);
+      let pixelData = imageData.data;
+
+      // 马赛克块的边长，能被图片的长宽整除
+      // 具体情况可能需要计算
+      let size = 16;
+      let totalNum = size ** 2;
+      // 每次循环一个马赛克块 
+      for(let i = 0; i < canvasB.height; i += size) {
+        for(let j = 0; j < canvasB.width; j += size) {
+          let totalr = 0, totalg = 0, totalb = 0;
+          for(let dx = 0; dx < size; dx++) {
+            for(let dy = 0; dy < size; dy++) {
+              let x = i + dx;
+              let y = j + dy;
+
+              let p = x * canvasB.width + y;
+              totalr += tempPixelData[4*p+0];
+              totalg += tempPixelData[4*p+1];
+              totalb += tempPixelData[4*p+2];
+            }
+          }
+          let p = i * canvasB.width + j;
+          let resr = totalr / totalNum;
+          let resg = totalg / totalNum;
+          let resb = totalb / totalNum;  
+
+          // 把得到的结果赋给马赛克块中的所有点
+          for(let dx = 0; dx < size; dx++) {
+            for(let dy = 0; dy < size; dy++) {
+              let x = i + dx;
+              let y = j + dy;
+
+              let p = x * canvasB.width + y;
+              pixelData[4*p+0] = resr;
+              pixelData[4*p+1] = resg;
+              pixelData[4*p+2] = resb; 
+            }
+          }
+        }
+      }
+
+      cxtB.putImageData(imageData, 0, 0, 0, 0, canvasB.width, canvasB.height);
+    }
+  </script>
+</body>
+</html>

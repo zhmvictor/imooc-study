@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lineCap</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;"></canvas>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const cxt = canvas.getContext('2d');
+      canvas.width = 800;
+      canvas.height = 800;
+
+      cxt.lineWidth = 50;
+      cxt.strokeStyle = '#058';
+
+      cxt.beginPath();
+      cxt.moveTo(100, 200);
+      cxt.lineTo(700, 200);
+      cxt.lineCap = 'butt';
+      cxt.stroke();
+
+      cxt.beginPath();
+      cxt.moveTo(100, 400);
+      cxt.lineTo(700, 400);
+      cxt.lineCap = 'round';
+      cxt.stroke();
+
+      cxt.beginPath();
+      cxt.moveTo(100, 600);
+      cxt.lineTo(700, 600);
+      cxt.lineCap = 'square';
+      cxt.stroke();
+
+      // baseline
+      cxt.lineWidth = 1;
+      cxt.strokeStyle = '#27a';
+      cxt.beginPath();
+      cxt.moveTo(100, 100);
+      cxt.lineTo(100, 700);
+      cxt.moveTo(700, 100);
+      cxt.lineTo(700, 700);
+      cxt.stroke();
+    }
+  </script>
+</body>
+</html>

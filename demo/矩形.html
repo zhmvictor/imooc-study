@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>矩形</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;"></canvas>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const cxt = canvas.getContext('2d');
+      canvas.width = 800;
+      canvas.height = 800;
+
+      // canvas 后绘制的图像会遮盖先绘制的图像
+      drawRect(cxt, 100, 100, 400, 400, 10, '#058', 'red');
+      drawRect2(cxt, 300, 300, 400, 400, 10, '#058', 'rgba(0, 256, 0, 0.5)');
+    }
+
+    function drawRect(cxt, x, y, width, height, borderWidth, borderColor, fillColor) {
+      cxt.beginPath();
+      // 绘制矩形
+      cxt.rect(x, y, width, height);
+      cxt.closePath();
+
+      cxt.lineWidth = borderWidth;
+      cxt.strokeStyle = borderColor;
+      cxt.fillStyle = fillColor;
+
+      cxt.fill();
+      cxt.stroke();
+    }
+    function drawRect2(cxt, x, y, width, height, borderWidth, borderColor, fillColor) {
+      cxt.lineWidth = borderWidth;
+      cxt.strokeStyle = borderColor;
+      cxt.fillStyle = fillColor;
+
+      // 绘制矩形同时填充
+      cxt.fillRect(x, y, width, height);
+      // 绘制矩形同时描边
+      cxt.strokeRect(x, y, width, height);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>drawImage-图像放缩</title>
+  <style>
+    #canvas {
+      display: block;
+      margin: 0 auto;
+      border: 1px solid #aaa;
+    }
+    #scale-range {
+      display: block;
+      margin: 20px auto;
+      width: 800px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas">
+    Your browser does not support the canvas element.
+  </canvas>
+  <!-- 滑动杆 -->
+  <input type="range" id="scale-range" min="0.5" max="3.0" step="0.01" value="1.0" >
+  <script>
+    const canvas = document.getElementById('canvas');
+    const cxt = canvas.getContext('2d');
+    const slider = document.getElementById('scale-range');
+    const img = new Image();
+    window.onload = function() {
+      canvas.width = 600;
+      canvas.height = 400;
+
+      let scale = slider.value;
+
+      img.src = '../image/code.png';
+      img.onload = function() {
+        drawIamgeByScale(scale);
+        slider.onmousemove = function() {
+          scale = slider.value;
+          drawIamgeByScale(scale);
+        }
+      }
+    }
+
+    function drawIamgeByScale(scale) {
+      // 缩放后源图像的尺寸
+      let imgWidth = img.width * scale;
+      let imgHeight = img.height * scale;
+
+      /**
+       * 思路一：源图像改变，目标图像不变
+       * 源图像的中心点与canvas中心点重合
+       * 不断改变源图像的绘制起点（sx, sy），在源图像上选取canvas区域大小的区域，贴到canvas上
+       * 这种写法有问题，只是假象源图像放大了，实际图片还是那么大。
+       */
+      // let sx = (imgWidth - canvas.width) / 2;
+      // let sy = (imgHeight - canvas.height) / 2;
+      // cxt.drawImage(img, sx/scale, sy/scale, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+
+
+      /**
+       * 思路二：源图像不变，目标图像改变
+       * 源图像的中心点与canvas中心点重合
+       * 不断改变目标图像的绘制起点（dx, dy），将整个源图像贴在canvas上
+       * 当源图像超出canvas时，目标图像的左上角坐标为负数，超出canvas的部分会被裁掉
+       * 当源图像小于canvas时，目标图像的左上角坐标为正数，整个图像都在canvas内
+       * 
+       * 放大的原理：
+       * 因为绘制时使用的方法是 drawImage(img, dx, dy, dw, dh)，
+       * 所以绘制时的目标图像长宽就是 dw 和 dh，且源图像会自动铺满目标图像区域。
+       * 放大时，绘制的目标图像不断变大，图像超出canvas的部分就越多，
+       * 而 canvas 相当于一个视口，此时视口大小不变，可视的范围就会变少，形成了局部放大的效果。
+       * 缩小的原理同理。
+       * 
+       */
+      let dx = (canvas.width - imgWidth) / 2;
+      let dy = (canvas.height- imgHeight) / 2;
+      cxt.clearRect(0, 0, canvas.width, canvas.height);
+      cxt.drawImage(img, dx, dy, imgWidth, imgHeight);
+
+
+      // 某个网友的写法
+      // var imageWidth = canvas.width / Math.sqrt(scale);
+      // var imageHeight = canvas.height / Math.sqrt(scale);
+      // var sx = (canvas.width-imageWidth)/2;
+      // var sy = (canvas.height-imageHeight)/2;
+      // cxt.drawImage(img,sx,sy,imageWidth,imageHeight,0,0,canvas.width,canvas.height);
+    }
+  </script>
+</body>
+</html>

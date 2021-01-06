@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>箭头</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;"></canvas>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const cxt = canvas.getContext('2d');
+      canvas.width = 800;
+      canvas.height = 800;
+  
+      cxt.beginPath();
+      cxt.moveTo(100, 350);
+      cxt.lineTo(500, 350);
+      cxt.lineTo(500, 200);
+      cxt.lineTo(700, 400);
+      cxt.lineTo(500, 600);
+      cxt.lineTo(500, 450);
+      cxt.lineTo(100, 450);
+      cxt.closePath();
+
+      cxt.lineWidth = 10;
+      cxt.strokeStyle = '#058';
+      cxt.fillStyle = 'yellow';
+      // 先填充，在描边，避免填充覆盖描边，使描边宽度变细
+      cxt.fill();
+      cxt.stroke();
+    }
+  </script>
+</body>
+</html>

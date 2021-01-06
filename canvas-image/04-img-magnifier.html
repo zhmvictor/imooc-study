@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>离屏canvas-放大镜效果</title>
+  <style>
+    #canvas {
+      display: block;
+      margin: 0 auto;
+      border: 1px solid #aaa;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body style="background: black;">
+  <canvas id="canvas">
+    Your browser does not support the canvas element.
+  </canvas>
+  <!-- 放大镜 -->
+  <canvas id="off-canvas" class="hidden"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const cxt = canvas.getContext('2d');
+    const img = new Image();
+
+    // 放大镜效果
+    const offCanvas = document.getElementById('off-canvas');
+    const offCxt = offCanvas.getContext('2d');
+
+    // 点击鼠标左键
+    let isMouseDown = false;
+    // 放大比率
+    let scale, scaleX,cscaleY;
+
+    window.onload = function() {
+      canvas.width = 800;
+      canvas.height = 500;
+
+      img.src = '../image/code.png';
+      img.onload = function() {
+        // 放大镜canvas默认和图片尺寸相同
+        offCanvas.width = img.width;
+        offCanvas.height = img.height;
+        
+        // scale = offCanvas.width / canvas.width;
+        // 分别计算x,y坐标的放大比率
+        scaleX = offCanvas.width / canvas.width;
+        scaleY = offCanvas.height / canvas.height;
+
+        cxt.drawImage(img, 0, 0, canvas.width, canvas.height);
+        offCxt.drawImage(img, 0, 0);
+      }
+    }
+    // 点击鼠标左键
+    canvas.onmousedown = function(e) {
+      // 禁用默认事件
+      e.preventDefault();
+      let point = windowToCanvas(e.clientX, e.clientY);
+      isMouseDown = true;
+      drawCanvasWithMagnifier(true, point);
+    }
+    // 点击鼠标左键同时鼠标移动
+    canvas.onmousemove = function(e) {
+      e.preventDefault();
+      if(isMouseDown) {
+        // 显示放大镜
+        let point = windowToCanvas(e.clientX, e.clientY);
+        console.log(point.x, point.y);
+        drawCanvasWithMagnifier(true, point);
+      }
+    }
+    // 松开鼠标左键
+    canvas.onmouseup = function(e) {
+      e.preventDefault();
+      isMouseDown = false;
+      drawCanvasWithMagnifier(false);
+    }
+    // 鼠标离开画布
+    canvas.onmouseout = function(e) {
+      e.preventDefault();
+      isMouseDown = false;
+      drawCanvasWithMagnifier(false);
+    }
+
+    // 将文档坐标转换为canvas对应的坐标
+    function windowToCanvas(x, y) {
+      let bbox = canvas.getBoundingClientRect();
+      return {
+        x: x - bbox.left,
+        y: y - bbox.top
+      };
+    }
+
+    // 绘制 canvas
+    function drawCanvasWithMagnifier(isShow, point) {
+      // 重绘基础canvas
+      cxt.clearRect(0, 0, canvas.width, canvas.height);
+      cxt.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      if(isShow) {
+        // 绘制放大镜
+        drawMagnifier(point);
+      }
+    }
+
+    /**
+     * 放大镜效果解析
+     * 1.技术：
+     *  离屏 canvas
+     * 2.思想：
+     *  利用离屏 canvas 技术，根据在基础 canvas 上点击的坐标，找出在离屏 canvas 上映射的坐标，
+     *  根据坐标在离屏 canvas 上截取出要放大的内容，将其绘制到基础 canvas 上。
+     * 3.原理：
+     *  基础 canvas 和离屏 canvas 绘制相同的图片；
+     *  基础 canvas 由的宽高由你指定，离屏 canvas 的宽高与图片尺寸相同；
+     *  计算离屏 canvas 与基础 canvas 的横纵坐标比率 scaleX 和 scaleY；
+     *  根据 scaleX 和 scaleY 计算出鼠标点击基础 canvas 坐标映射到离屏 canvas 的坐标；
+     *  以计算得到的离屏 canvas 坐标（imgCx, imgCy）为中心点，并设定一个放大半径 mr；
+     *  根据 mr 和（imgCx, imgCy）计算出源图像的（sx, sy）；
+     *  根据 mr 和 point 计算出目标图像的（dx, dy）；
+     *  将源图像内容映射到目标图像。
+     * 4.呈现放大效果的前提：
+     *  图像宽高 > 基础canvas宽高
+     */
+
+    function drawMagnifier(point) {
+      // 计算鼠标点击canvas的位置在offCanvas的位置坐标
+      // let imgCx = point.x * scale;
+      // let imgCy = point.y * scale;
+      let imgCx = point.x * scaleX;
+      let imgCy = point.y * scaleY;
+
+      // 放大镜显示的范围半径
+      let mr = 100;
+      // 将离屏 canvas 坐标设为中心点，计算出源图像的（sx, sy）
+      let sx = imgCx - mr;
+      let sy = imgCy - mr;
+
+      let dx = point.x - mr;
+      let dy = point.y - mr;
+
+      cxt.save();
+
+      cxt.lineWidth = 10;
+      cxt.strokeStyle = '#069';
+
+      cxt.beginPath();
+      cxt.arc(point.x, point.y, mr, 0, Math.PI*2);
+      cxt.stroke();
+
+      cxt.clip();
+
+      // 将 offCanvas 的内容映射到 canvas 
+      cxt.drawImage(offCanvas, sx, sy, 2*mr, 2*mr, dx, dy, 2*mr, 2*mr);
+
+      cxt.restore();
+    }
+  </script>
+</body>
+</html>

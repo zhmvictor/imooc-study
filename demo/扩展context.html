@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ellipse</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;">
+    Your browser does not support the canvas element.
+  </canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const cxt = canvas.getContext('2d');
+
+    // 扩展 context
+    CanvasRenderingContext2D.prototype.fillStar = function(r, R, x, y, rot) {
+      this.beginPath();
+      for(let i = 0; i < 5; i++) {
+        this.lineTo(Math.cos((18 + i * 72 - rot) / 180 * Math.PI) * R + x,
+                  -Math.sin((18 + i * 72 - rot) / 180 * Math.PI) * R + y);
+        this.lineTo(Math.cos((54 + i * 72 - rot) / 180 * Math.PI) * r + x,
+                  -Math.sin((54 + i * 72 - rot) / 180 * Math.PI) * r + y);  
+      }
+      this.closePath();
+      this.fill();
+    }
+
+    window.onload = function() {
+      canvas.width = 800;
+      canvas.height = 800;
+
+      cxt.fillStyle = '#058';
+      cxt.fillStar(150, 300, 400, 400, 0);
+    }
+  </script>
+</body>
+</html>

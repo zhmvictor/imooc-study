@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>isPointInPath</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;"></canvas>
+  <script>
+    let balls = [];
+    const canvas = document.getElementById('canvas');
+    const cxt = canvas.getContext('2d');
+    window.onload = function() {
+      canvas.width = 800;
+      canvas.height = 800;
+
+      for(let i = 0; i < 10; i++) {
+        let aBall = {
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 50 + 20,
+        };
+        balls[i] = aBall;
+      }
+
+      // 鼠标点击
+      // draw1();
+      // canvas.addEventListener('mouseup', detect1);
+
+      // 鼠标移动
+      draw2();
+      canvas.addEventListener('mousemove', detect2);
+    }
+
+    function draw1() {
+      for(let i = 0; i < balls.length; i++) {
+        cxt.beginPath();
+        cxt.arc(balls[i].x, balls[i].y, balls[i].r, 0, Math.PI * 2);
+        cxt.fillStyle = '#058';
+        cxt.fill();
+      }
+    }
+    function detect1() {
+      // 获取鼠标点击坐标
+      // getBoundingClientRect() 是 js 方法
+      // 这两行代码是 canvas 获取鼠标交互事件坐标的标准写法
+      let x = event.clientX - canvas.getBoundingClientRect().left;
+      let y = event.clientY - canvas.getBoundingClientRect().top;
+
+      for(let i = 0; i < balls.length; i++) {
+        cxt.beginPath();
+        cxt.arc(balls[i].x, balls[i].y, balls[i].r, 0, Math.PI * 2);
+
+        if(cxt.isPointInPath(x, y)) {
+          cxt.fillStyle = 'red';
+          cxt.fill();
+        }
+      }
+    }
+
+    function draw2(x, y) {
+      cxt.clearRect(0, 0, canvas.width, canvas.height);
+      for(let i = 0; i < balls.length; i++) {
+        cxt.beginPath();
+        cxt.arc(balls[i].x, balls[i].y, balls[i].r, 0, Math.PI * 2);
+
+        if(cxt.isPointInPath(x, y)) {
+          cxt.fillStyle = 'red';
+        } else {
+          cxt.fillStyle = '#058';
+        }
+        cxt.fill();
+      }
+    }
+    function detect2() {
+      let x = event.clientX - canvas.getBoundingClientRect().left;
+      let y = event.clientY - canvas.getBoundingClientRect().top;
+
+      draw2(x, y);
+    }
+  </script>
+</body>
+</html>

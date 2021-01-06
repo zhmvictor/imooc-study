@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>探照灯</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;"></canvas>
+  <script>
+    let searchLight = {
+      x: 400,
+      y: 400,
+      radius: 150,
+      vx: Math.random() * 5 + 5,
+      vy: Math.random() * 5 + 10
+    };
+    let rot = 0;
+    let isIncrease = true;
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const cxt = canvas.getContext('2d');
+      canvas.width = 800;
+      canvas.height = 800;
+
+      setInterval(() => {
+        draw(cxt);
+        // 改变半径
+        // updateRadius(canvas.width, canvas.height);
+        // 改变位置
+        updatePosition(canvas.width, canvas.height);
+      }, 50)
+    }
+
+    function draw(cxt) {
+      const canvas = cxt.canvas;
+      cxt.clearRect(0, 0, canvas.width, canvas.height);
+
+      cxt.save();
+
+      cxt.beginPath();
+      cxt.fillStyle = 'dark';
+      cxt.fillRect(0, 0, canvas.width, canvas.height);
+
+      cxt.save();
+      cxt.translate(searchLight.x, searchLight.y);
+      cxt.rotate(rot / 180 * Math.PI);
+      cxt.scale(searchLight.radius, searchLight.radius);
+      starPath(cxt);
+      cxt.fillStyle = '#fff';
+      cxt.fill();
+      cxt.restore();
+      cxt.clip();
+
+      cxt.font = 'bold 150px Arial';
+      cxt.textAlign = 'center';
+      cxt.textBaseline = 'middle';
+      cxt.fillStyle = '#058';
+      cxt.fillText('Canvas', canvas.width / 2, canvas.height * 0.25);
+      cxt.fillText('Canvas', canvas.width / 2, canvas.height * 0.5);
+      cxt.fillText('Canvas', canvas.width / 2, canvas.height * 0.75);
+
+      cxt.restore();
+    }
+
+    function updateRadius(canvasWidth, canvasHeight) {
+      if(searchLight.radius > 700) {
+        isIncrease = false;
+      } else if (searchLight.radius < 150) {
+        isIncrease = true;
+      }
+
+      if(isIncrease) {
+        searchLight.radius += 5;
+      } else {
+        searchLight.radius -= 5;
+      }
+    }
+
+    function updatePosition(canvasWidth, canvasHeight) {
+      rot += 1;
+      searchLight.x += searchLight.vx;
+      searchLight.y += searchLight.vy;
+
+      if (searchLight.x - searchLight.radius <= 0) {
+        searchLight.vx = -searchLight.vx;
+        searchLight.x = searchLight.radius;
+      }
+      if (searchLight.x + searchLight.radius >= canvasWidth) {
+        searchLight.vx = -searchLight.vx;
+        searchLight.x = canvasWidth - searchLight.radius;
+      }
+
+      if (searchLight.y - searchLight.radius <= 0) {
+        searchLight.vy = -searchLight.vy;
+        searchLight.y = searchLight.radius;
+      }
+      if (searchLight.y + searchLight.radius >= canvasHeight) {
+        searchLight.vy = -searchLight.vy;
+        searchLight.y = canvasHeight - searchLight.radius;
+      }
+    }
+
+    function starPath(cxt) {
+      cxt.beginPath();
+      for(let i = 0; i < 5; i++) {
+        cxt.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI),
+                  -Math.sin((18 + i * 72) / 180 * Math.PI));
+        cxt.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * 0.5,
+                  -Math.sin((54 + i * 72) / 180 * Math.PI) * 0.5);  
+      }
+      cxt.closePath();
+    }
+  </script>
+</body>
+</html>

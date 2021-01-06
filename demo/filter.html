@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>css3滤镜 - filter</title>
+  <script src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js"></script>
+  <style>
+    .content {
+      width: 700px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-around;
+    }
+    .title {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+    .controller {
+      width: 1200px;
+      margin: 10px auto;
+      display: flex;
+      justify-content: space-around;
+    }
+    .filter-btn {
+      width: 100px;
+      height: 30px;
+      background: #104E8B;
+      color: white;
+      text-align: center;
+      line-height: 30px;
+      cursor: pointer;
+    }
+    .filter-btn:hover {
+      background: red;
+    }
+    .selected-btn {
+      background: red;
+    }
+    .blur {
+      -webkit-filter: blur(4px);
+      filter: blur(4px);
+    }
+    .brightness {
+      -webkit-filter: brightness(0.30);
+      filter: brightness(0.30);
+    }
+    .contrast {
+      -webkit-filter: contrast(180%);
+      filter: contrast(180%);
+    }
+    .grayscale {
+      -webkit-filter: grayscale(100%);
+      filter: grayscale(100%);
+    }
+    .huerotate {
+      -webkit-filter: hue-rotate(180deg);
+      filter: hue-rotate(180deg);
+    }
+    .invert {
+      -webkit-filter: invert(100%);
+      filter: invert(100%);
+    }
+    .opacity {
+      -webkit-filter: opacity(50%);
+      filter: opacity(50%);
+    }
+    .saturate {
+      -webkit-filter: saturate(7); 
+      filter: saturate(7);
+    }
+    .sepia {
+      -webkit-filter: sepia(100%);
+      filter: sepia(100%);
+    }
+    .shadow {
+      -webkit-filter: drop-shadow(8px 8px 10px green);
+      filter: drop-shadow(8px 8px 10px green);
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <img src="https://www.runoob.com/try/demo_source/pineapple.jpg">
+    <img id="handleImg" class="blur" src="https://www.runoob.com/try/demo_source/pineapple.jpg">
+  </div>
+  <div class="title">
+    <p>blur</p>
+    <p>filter: blur(4px)</p>
+    <p>default: 0</p>
+  </div>
+  <div class="controller">
+    <div class="filter-btn selected-btn">blur</div>
+    <div class="filter-btn">brightness</div>
+    <div class="filter-btn">contrast</div>
+    <div class="filter-btn">grayscale</div>
+    <div class="filter-btn">huerotate</div>
+    <div class="filter-btn">invert</div>
+    <div class="filter-btn">opacity</div>
+    <div class="filter-btn">saturate</div>
+    <div class="filter-btn">sepia</div>
+    <div class="filter-btn">shadow</div>
+  </div>
+  <script>
+    // 默认值
+    let defaultObj = {
+      blur: 0,
+      brightness: 1,
+      contrast: 1,
+      grayscale: 0,
+      huerotate: '0deg',
+      invert: 0,
+      opacity: 1,
+      saturate: 1,
+      sepia: 0,
+      shadow: '无'
+    };
+    $('.filter-btn').click(
+      function(e) {
+        $('.filter-btn').removeClass('selected-btn');
+        $(this).addClass('selected-btn');
+
+        $('#handleImg').removeClass();
+        $('#handleImg').addClass($(this)[0].innerText);
+
+        $('p')[0].innerText = $(this)[0].innerText;
+        $('p')[1].innerText = `filter: ${$('#handleImg').css('filter')}`;
+        $('p')[2].innerText = `default: ${defaultObj[$(this)[0].innerText]}`;
+      }
+    );
+  </script>
+</body>
+</html>

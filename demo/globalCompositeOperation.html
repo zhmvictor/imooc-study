@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>globalCompositeOperation</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;"></canvas>
+  <div id="buttons">
+    <a href="#">source-over</a>
+    <a href="#">source-atop</a>
+    <a href="#">source-in</a>
+    <a href="#">source-out</a>
+    <a href="#">destination-over</a>
+    <a href="#">destination-atop</a>
+    <a href="#">destination-in</a>
+    <a href="#">destination-out</a>
+    <a href="#">lighter</a>
+    <a href="#">copy</a>
+    <a href="#">xor</a>
+  </div>
+  <script>
+    window.onload = function() {
+      draw('source-over');
+
+      let buttons = document.getElementById('buttons').getElementsByTagName('a');
+      for(let i = 0; i < buttons.length; i++) {
+        buttons[i].onclick = function() {
+          draw(this.text);
+          return false;
+        }
+      }
+    }
+
+    function draw(compositeStyle) {
+      const canvas = document.getElementById('canvas');
+      canvas.width = 1200;
+      canvas.height = 800;
+      const cxt = canvas.getContext('2d');
+
+      cxt.clearRect(0, 0, canvas.width, canvas.height);
+
+      // draw title
+      cxt.font = 'bold 40px Arial';
+      cxt.textAlign = 'center';
+      cxt.textBaseline = 'middle';
+      cxt.fillStyle = '#058';
+      cxt.fillText('globalCompositeOperation = ' + compositeStyle, canvas.width / 2, 60);
+
+      // draw a rect
+      cxt.fillStyle = 'blue';
+      cxt.fillRect(300, 150, 500, 500);
+
+      cxt.globalCompositeOperation = compositeStyle;
+
+      // draw a triangle
+      cxt.fillStyle = 'red';
+      cxt.beginPath();
+      cxt.moveTo(700, 250);
+      cxt.lineTo(1000, 750);
+      cxt.lineTo(400, 750);
+      cxt.closePath();
+      cxt.fill();
+    }
+
+  </script>
+</body>
+</html>

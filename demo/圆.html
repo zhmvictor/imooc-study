@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>圆</title>
+</head>
+<body>
+  <canvas id="canvas" style="border:1px solid #c3c3c3;display: block;margin: 50px auto;">
+    Your browser does not support the canvas element.
+  </canvas>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      canvas.width = 1024;
+      canvas.height = 768;
+      const cxt = canvas.getContext('2d');
+
+      for(let i = 0; i < 10; i++) {
+        cxt.beginPath();
+        cxt.arc(50 + i * 100, 180, 40, 0, Math.PI * 2 * (i + 1) / 10);
+        cxt.closePath();
+        cxt.stroke();
+      } 
+
+      // 不使用 closePath 时，不会自动封闭未封闭的图形
+      for(let i = 0; i < 10; i++) {
+        cxt.beginPath();
+        cxt.arc(50 + i * 100, 300, 40, 0, Math.PI * 2 * (i + 1) / 10);
+        cxt.stroke();
+      } 
+
+      // 填充颜色
+      cxt.fillStyle = '#005588';
+      for(let i = 0; i < 10; i++) {
+        cxt.beginPath();
+        cxt.arc(50 + i * 100, 420, 40, 0, Math.PI * 2 * (i + 1) / 10, true);
+        cxt.closePath();
+        cxt.stroke();
+        cxt.fill();
+      } 
+    }
+  </script>
+</body>
+</html>

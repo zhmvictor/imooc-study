@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>星空</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;"></canvas>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const cxt = canvas.getContext('2d');
+      canvas.width = 800;
+      canvas.height = 800;
+
+      // 黑色夜空背景
+      cxt.fillStyle = 'black';
+      cxt.fillRect(0, 0, canvas.width, canvas.height);
+
+      for(let i = 0; i < 200; i++) {
+        // r: 10 ~ 20
+        let r = Math.random() * 10 + 10;
+        let x = Math.random() * canvas.width;
+        let y = Math.random() * canvas.height;
+        let a = Math.random() * 360;
+        drawStar(cxt, x, y, r, a);
+      }
+    }
+
+    // 绘制出起点在(x, y)，半径为 R，旋转 rotate 度的五角星
+    function drawStar(cxt, x, y, R, rotate = 0) {
+      cxt.save();
+
+      cxt.translate(x, y);
+      cxt.rotate(rotate / 180 * Math.PI);
+      cxt.scale(R, R);
+
+      starPath(cxt);
+
+      cxt.fillStyle = '#fb3';
+      // 因为 scale 有副作用，所以放弃线条绘制
+      // cxt.strokeStyle = '#fb5';
+      // cxt.lineWidth = 3;
+      // cxt.lineJoin = 'round';
+
+      cxt.fill();
+      // cxt.stroke();
+
+      cxt.restore();
+    }
+
+    // 起点在(0, 0)，大圆半径为 1，没有偏移和旋转的标准五角星
+    function starPath(cxt) {
+      cxt.beginPath();
+      for(let i = 0; i < 5; i++) {
+        cxt.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI),
+                  -Math.sin((18 + i * 72) / 180 * Math.PI));
+        cxt.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * 0.5,
+                  -Math.sin((54 + i * 72) / 180 * Math.PI) * 0.5);  
+      }
+      cxt.closePath();
+    }
+  </script>
+</body>
+</html>

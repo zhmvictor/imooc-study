@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>drawImage</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;">
+    Your browser does not support the canvas element.
+  </canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const cxt = canvas.getContext('2d');
+    window.onload = function() {
+      canvas.width = 800;
+      canvas.height = 800;
+
+      let img = new Image();
+      img.src = '../image/code.png';
+      img.onload = function() {
+        // cxt.drawImage(img, 0, 0);
+        // cxt.drawImage(img, 0, 0, canvas.width, canvas.height);
+        cxt.drawImage(img, 600, 200, 400, 400, 0, 0, canvas.width, canvas.height);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>填充 Canvas</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;"></canvas>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const cxt = canvas.getContext('2d');
+      canvas.width = 800;
+      canvas.height = 800;
+
+      let backCanvas = createBackgroundCanvas();
+      let pattern = cxt.createPattern(backCanvas, 'repeat');
+      cxt.fillStyle = pattern;
+      cxt.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function createBackgroundCanvas() {
+      let backCanvas = document.createElement('canvas');
+      backCanvas.width = 100;
+      backCanvas.height = 100;
+      let backCanvasCxt = backCanvas.getContext('2d');
+      drawStar(backCanvasCxt, 50, 50, 50, 0);
+      return backCanvas;
+    }
+
+    function drawStar(cxt, x, y, R, rotate = 0) {
+      cxt.save();
+      cxt.translate(x, y);
+      cxt.rotate(rotate / 180 * Math.PI);
+      cxt.scale(R, R);
+      starPath(cxt);
+      cxt.fillStyle = '#fb3';
+      cxt.fill();
+      cxt.restore();
+    }
+
+    function starPath(cxt) {
+      cxt.beginPath();
+      for(let i = 0; i < 5; i++) {
+        cxt.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI),
+                  -Math.sin((18 + i * 72) / 180 * Math.PI));
+        cxt.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * 0.5,
+                  -Math.sin((54 + i * 72) / 180 * Math.PI) * 0.5);  
+      }
+      cxt.closePath();
+    }
+  </script>
+</body>
+</html>

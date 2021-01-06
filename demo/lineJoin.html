@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lineJoin</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;"></canvas>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const cxt = canvas.getContext('2d');
+      canvas.width = 800;
+      canvas.height = 800;
+
+      cxt.lineWidth = 20;
+      cxt.strokeStyle = '#058';
+      cxt.lineJoin = 'miter';
+      cxt.miterLimit = 20;
+      drwaStar(cxt, 150, 300, 400, 400, 30);
+    }
+
+    function drwaStar(cxt, r, R, offsetX, offsetY, rotate = 0) {
+      cxt.beginPath();
+      for(let i = 0; i < 5; i++) {
+        // 假定大圆半径R，小圆半径是r
+        // 角度转弧度制
+        // 大圆初始角度 18 度，小圆初始角度 54 度，相邻角度差 72 度
+        // 不加偏移量时，在画布上默认起点是(0, 0)点，加上偏移量将五角星画在画布中间
+        cxt.lineTo(Math.cos((18 + i * 72 - rotate) / 180 * Math.PI) * R + offsetX,
+                  -Math.sin((18 + i * 72 - rotate) / 180 * Math.PI) * R + offsetY);
+        cxt.lineTo(Math.cos((54 + i * 72 - rotate) / 180 * Math.PI) * r + offsetX,
+                  -Math.sin((54 + i * 72 - rotate) / 180 * Math.PI) * r + offsetY);  
+      }
+      cxt.closePath();
+      cxt.stroke();
+    }
+  </script>
+</body>
+</html>

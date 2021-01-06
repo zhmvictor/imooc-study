@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>七巧板</title>
+</head>
+<body>
+  <canvas id="canvas" style="border:1px solid #c3c3c3;display: block;margin: 50px auto;">
+    Your browser does not support the canvas element.
+  </canvas>
+  <script>
+    // 定义七巧板坐标
+    const tangram = [
+      {p: [{x: 0, y: 0},{x: 800, y: 0}, {x: 400, y: 400}], color: '#caff67'},
+      {p: [{x: 0, y: 0},{x: 400, y: 400}, {x: 0, y: 800}], color: '#67becf'},
+      {p: [{x: 800, y: 0},{x: 800, y: 400}, {x: 600, y: 600}, {x: 600, y: 200}], color: '#ef3d61'},
+      {p: [{x: 600, y: 200},{x: 600, y: 600}, {x: 400, y: 400}], color: '#f9f51a'},
+      {p: [{x: 400, y: 400},{x: 600, y: 600}, {x: 400, y: 800}, {x: 200, y: 600}], color: '#a594c0'},
+      {p: [{x: 200, y: 600},{x: 400, y: 800}, {x: 0, y: 800}], color: '#fa8ecc'},
+      {p: [{x: 800, y: 400},{x: 800, y: 800}, {x: 400, y: 800}], color: '#f6ca29'}
+    ];
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      canvas.width = 800;
+      canvas.height = 800;
+      const cxt = canvas.getContext('2d');
+      if(cxt) {
+        for(let i = 0; i < tangram.length; i++) {
+          draw(tangram[i], cxt);
+        }
+      } else {
+        alert('Your browser does not support the canvas element.');
+      }
+
+      // 画图
+      function draw(piece, cxt) {
+        // 状态开始
+        cxt.beginPath();
+        // 绘制状态图
+        cxt.moveTo(piece.p[0].x, piece.p[0].y);
+        for(let i = 1; i < piece.p.length; i++) {
+          cxt.lineTo(piece.p[i].x, piece.p[i].y);
+        }
+        // 状态结束
+        cxt.closePath();
+        // 填充颜色
+        cxt.fillStyle = piece.color;
+        cxt.fill();
+
+        // 边框
+        cxt.lineWidth = 3;
+        cxt.strokeStyle = 'black';
+        cxt.stroke();
+      }
+    }
+  </script>
+</body>
+</html>

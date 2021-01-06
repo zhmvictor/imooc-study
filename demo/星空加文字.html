@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>星空</title>
+</head>
+<body>
+  <canvas id="canvas" style="border: 1px solid #aaa;"></canvas>
+  <script>
+    window.onload = function() {
+      const canvas = document.getElementById('canvas');
+      const cxt = canvas.getContext('2d');
+      canvas.width = 1200;
+      canvas.height = 800;
+
+      // 夜空背景
+      // 线性渐变
+      // let skyStyle = cxt.createLinearGradient(0, 0, 0, canvas.height);
+      // skyStyle.addColorStop(0.0, 'black');
+      // skyStyle.addColorStop(1.0, '#035');
+
+      // 径向渐变
+      let skyStyle = cxt.createRadialGradient(
+        canvas.width / 2, canvas.height, 0,
+        canvas.width / 2, canvas.height, canvas.height);
+      skyStyle.addColorStop(0.0, '#035');
+      skyStyle.addColorStop(1.0, 'black');
+      
+      cxt.fillStyle = skyStyle;
+      cxt.fillRect(0, 0, canvas.width, canvas.height);
+
+      for(let i = 0; i < 200; i++) {
+        // r: 5 ~ 10
+        let r = Math.random() * 5 + 5;
+        let x = Math.random() * canvas.width;
+        let y = Math.random() * canvas.height * 0.65;
+        let a = Math.random() * 360;
+        drwaStar(cxt, x, y, r, a);
+      }
+
+      fillMoon(cxt, 2, 900, 200, 100, 30);
+      drawLand(cxt);
+      fillText(cxt, 'Hello World！你好，世界！很高兴认识你！', canvas.width * 0.5, canvas.height * 0.85);
+    }
+
+    // 绘制出起点在(x, y)，半径为 R，旋转 rotate 度的五角星
+    function drwaStar(cxt, x, y, R, rotate = 0) {
+      cxt.save();
+      cxt.translate(x, y);
+      cxt.rotate(rotate / 180 * Math.PI);
+      cxt.scale(R, R);
+      starPath(cxt);
+      cxt.fillStyle = '#fb3';
+      cxt.fill();
+      cxt.restore();
+    }
+
+    // 起点在(0, 0)，大圆半径为 1，没有偏移和旋转的标准五角星
+    function starPath(cxt) {
+      cxt.beginPath();
+      for(let i = 0; i < 5; i++) {
+        cxt.lineTo(Math.cos((18 + i * 72) / 180 * Math.PI),
+                  -Math.sin((18 + i * 72) / 180 * Math.PI));
+        cxt.lineTo(Math.cos((54 + i * 72) / 180 * Math.PI) * 0.5,
+                  -Math.sin((54 + i * 72) / 180 * Math.PI) * 0.5);  
+      }
+      cxt.closePath();
+    }
+
+    // d: 控制点坐标的横坐标值
+    function fillMoon(cxt, d, x, y, R, rot, fillColor = '#fb5') {
+      cxt.save();
+      cxt.translate(x, y);
+      cxt.rotate(rot * Math.PI / 180);
+      cxt.scale(R, R);
+      pathMoon(cxt, d);
+      cxt.fillStyle = fillColor;
+      cxt.fill();
+      cxt.restore();
+    }
+
+    // 以(0, 0) 点为圆心，1 为半径
+    function pathMoon(cxt, d) {
+      cxt.beginPath();
+      cxt.arc(0, 0, 1, 0.5 * Math.PI, 1.5 * Math.PI, true);
+      cxt.moveTo(0, -1);
+      cxt.arcTo(d, 0, 0, 1, dis(0, -1, d, 0) / d);
+      cxt.closePath();
+    }
+
+    function dis(x1, y1, x2, y2) {
+      return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
+    }
+
+    function drawLand(cxt) {
+      cxt.save();
+      cxt.beginPath();
+      cxt.moveTo(0, 600);
+      // 三次贝塞尔曲线
+      cxt.bezierCurveTo(540, 400, 600, 800, 1200, 600);
+      cxt.lineTo(1200, 800);
+      cxt.lineTo(0, 800);
+      cxt.closePath();
+      // 线性渐变
+      let landStyle = cxt.createLinearGradient(0, 800, 0, 0);
+      landStyle.addColorStop(0.0, '#030');
+      landStyle.addColorStop(1.0, '#058');
+      cxt.fillStyle = landStyle;
+      cxt.fill();
+      cxt.restore();
+    }
+
+    function fillText(cxt, string, x, y) {
+      cxt.font = 'bold 40px Arial';
+      let linearGrad = cxt.createLinearGradient(0, 0, cxt.canvas.width, 0);
+      linearGrad.addColorStop(0.0, 'red');
+      linearGrad.addColorStop(0.25, 'orange');
+      linearGrad.addColorStop(0.5, 'yellow');
+      linearGrad.addColorStop(0.75, 'green');
+      linearGrad.addColorStop(1.0, 'blue');
+      cxt.fillStyle = linearGrad;
+      cxt.textAlign = 'center';
+      cxt.textBaseline = 'bottom';
+      cxt.fillText(string, x, y);
+    }
+  </script>
+</body>
+</html>
