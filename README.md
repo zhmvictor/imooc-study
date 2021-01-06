@@ -2,7 +2,7 @@
 
 ## JavaScript/TypeScript
 
-- 《Typescript 封装播放器组件》-- branch:[ts-player]
+- [《Typescript 封装播放器组件》](ts-player)
 - 《移动web开发适配秘籍Rem》-- branch:[rem-demo]
 
 ## Vue
