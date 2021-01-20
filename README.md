@@ -13,6 +13,7 @@
 ## Vue
 
 - [《基于Element-UI二次封装业务组件》](../../tree/elem-components)
+- [《vuex基础入门》](../../tree/vuex-demo)
 
 ## Node
 
