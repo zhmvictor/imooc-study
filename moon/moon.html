@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>中秋赏月</title>
+  <!-- 汉字库 -->
+  <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.0/dist/hanzi-writer.min.js"></script>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+    /* 日落月升 */
+    @keyframes nightfall {
+      from {
+        background: #9dc1df;
+      }
+      16% {
+        background: #416cc9;
+      }
+      32% {
+        background: #e58732;
+      }
+      50% {
+        background: #e55327;
+      }
+      to {
+        background: #2a2d38;
+      }
+    }
+    .container {
+      width: 100vw;
+      height: 100vh;
+      transition: all ease;
+      animation: nightfall 8s;
+      background: #2a2d38;
+      overflow: hidden;
+    }
+
+    @keyframes sunfallmoonrise {
+      from {
+        background: #fff;
+        top: 10vh;
+      }
+      16% {
+        background: #ffff54;
+      }
+      32% {
+        background: #e63724;
+      }
+      50% {
+        background: #e93324;
+        top: 80vh;
+      }
+      to {
+        background: #f9dc60;
+        top: 10vh;
+      }
+    }
+    .sun-and-moon {
+      width: 200px;
+      height: 200px;
+      animation: sunfallmoonrise 8s;
+      border-radius: 50%;
+      position: absolute;
+      left: 20vw;
+      top: 10vh;
+      background: #f9dc60;
+      box-shadow: 0 0 20px #f9dc60;
+      transition: all 3s ease;
+      z-index: 10;
+    }
+
+    @keyframes mountain {
+      from {
+        background: rgb(25, 175, 75);
+      }
+      16% {
+        background: rgb(168, 192, 35);
+      }
+      32% {
+        background: rgb(199, 106, 31);
+      }
+      50% {
+        background: rgb(167, 66, 26);
+      }
+      to {
+        background: rgb(56, 56, 27);
+      }
+    }
+    .mountain-common {
+      position: absolute;
+      z-index: 999;
+      border-radius: 50%;
+      background: rgb(56, 56, 27);
+      animation: mountain 8s;
+    }
+    .mountain-a {
+      width: 80vw;
+      height: 400px;
+      top: 80vh;
+      left: -20vw;
+    }
+    .mountain-b {
+      width: 100vw;
+      height: 800px;
+      top: 65vh;
+      left: 40vw;
+    }
+
+    /* 镜头拉近，月亮变大，山消失 */
+    @keyframes moon-bigger {
+      from {
+        width: 200px;
+        height: 200px;
+        left: 20vw;
+        top: 10vh;
+      }
+
+      to {
+        width: 600px;
+        height: 600px;
+        top: calc(50vh - 300px);
+        left: calc(40vw - 300px);
+      }
+    }
+
+    @keyframes mountain-down-a {
+      from {
+        top: 80vh;
+        left: -20vw;
+      }
+      to {
+        top: 115vh;
+        left: -300px;
+        opacity: 0.6;
+      }
+    }
+
+    @keyframes mountain-down-b {
+      from {
+        top: 65vh;
+        left: 40vw;
+      }
+      to {
+        top: 100vh;
+        left: calc(60vw - 300px);
+        opacity: 0.6;
+      }
+    }
+    /* 星星闪烁 */
+    @keyframes start-scale {
+      from {
+        transform: scale(1, 1);
+      }
+      25% {
+        transform: scale(0.1, 0.1);
+      }
+      50% {
+        transform: scale(1, 1);
+      }
+      25% {
+        transform: scale(2, 2);
+      }
+      to {
+        transform: scale(1, 1);
+      }
+    }
+    .star {
+      height: 3px;
+      width: 3px;
+      background: #f9dc60;
+      border-radius: 50%;
+      position: absolute;
+      animation: start-scale 2s;
+      animation-iteration-count: infinite;
+    }
+    /* 诗句 */
+    .poetry div {
+      width: 60px;
+      height: 60px;
+      margin-top: 6px;
+    }
+    .poetry-top {
+      position: absolute;
+      top: 20vh;
+      right: 48px;
+    }
+    .poetry-down {
+      position: absolute;
+      top: 30vh;
+      right: 130px;
+    }
+
+    #word-cloud__container {
+      width: 600px;
+      height: 600px;
+      top: calc(50vh - 300px);
+      left: calc(40vw - 300px);
+      position: absolute;
+      transition: all 2s;
+      border-radius: 50%;
+      overflow: hidden;
+      opacity: 0.6;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="sun-and-moon"></div>
+    <div class="mountain-common mountain-a"></div>
+    <div class="mountain-common mountain-b"></div>
+  </div>
+  <!-- 文字 -->
+  <div class="poetry-top poetry">
+    <div id="dan"></div>
+    <div id="yuan"></div>
+    <div id="ren"></div>
+    <div id="chang"></div>
+    <div id="jiu"></div>
+  </div>
+  <div class="poetry-down poetry">
+    <div id="qian"></div>
+    <div id="li"></div>
+    <div id="gong"></div>
+    <div id="chan"></div>
+    <div id="juan"></div>
+  </div>
+  <!-- 词云图 -->
+  <div id="word-cloud__container"></div>
+  <script>
+    // 月亮拉近镜头
+    const timerA = setTimeout(() => {
+      clearTimeout(timerA);
+
+      const moon = document.getElementsByClassName('sun-and-moon')[0];
+      moon.style.animation = 'moon-bigger 5s';
+      moon.style.width = '600px';
+      moon.style.height = '600px';
+      moon.style.top = 'calc(50vh - 300px)';
+      moon.style.left = 'calc(40vw - 300px)';
+
+
+      const mountainList = document.getElementsByClassName('mountain-common');
+      mountainList[0].style.animation = 'mountain-down-a 5s';
+      mountainList[0].style.top = '100vh';
+      mountainList[1].style.animation = 'mountain-down-b 5s';
+      mountainList[1].style.top = '100vh';
+    }, 9000);
+
+    // 随机时间，随机位置，产出星星
+    const arr = new Array(60);
+    for(const item of arr) {
+      const dom = document.createElement('div');
+      dom.className = 'star';
+      dom.style.left = `${Math.random() * 100}vw`;
+      dom.style.top = `${Math.random() * 100}vh`;
+      setTimeout(() => {
+        document.body.appendChild(dom);
+      }, 15000 * Math.random());
+    }
+
+    // 汉字处理
+    const BASE_CONFIG = {
+      width: 60,
+      height: 60,
+      padding: 2,
+      delayBetweenStrokes: 0,
+      strokeAnimationSpeed: 2,
+      showCharacter: false,
+      showOutline: false,
+    };
+    const WRITER_CONFIG = {
+      ...BASE_CONFIG,
+      strokeColor: '#f9dc60'
+    };
+    const getWriterList = () => {
+      let writerList = [];
+      writerList.push(HanziWriter.create('dan', '但', WRITER_CONFIG));
+      writerList.push(HanziWriter.create('yuan', '愿', WRITER_CONFIG));
+      writerList.push(HanziWriter.create('ren', '人', WRITER_CONFIG));
+      writerList.push(HanziWriter.create('chang', '长', WRITER_CONFIG));
+      writerList.push(HanziWriter.create('jiu', '久', WRITER_CONFIG));
+      writerList.push(HanziWriter.create('qian', '千', WRITER_CONFIG));
+      writerList.push(HanziWriter.create('li', '里', WRITER_CONFIG));
+      writerList.push(HanziWriter.create('gong', '共', WRITER_CONFIG));
+      writerList.push(HanziWriter.create('chan', '婵', WRITER_CONFIG));
+      writerList.push(HanziWriter.create('juan', '娟', WRITER_CONFIG));
+      return writerList;
+    }
+    const generateAnimateWriter = async (writerList) => {
+      const writeCount = writerList.length;
+      for(const writer of writerList) {
+        await writer.animateCharacter();
+      }
+    }
+    generateAnimateWriter(getWriterList());
+  </script>
+</body>
+</html>

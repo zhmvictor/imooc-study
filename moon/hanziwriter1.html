@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hanzi Writer 词组、句子动画</title>
+  <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.0/dist/hanzi-writer.min.js"></script>
+  <style>
+    .container {
+      display: flex;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="character-target-1"></div>
+    <div id="character-target-2"></div>
+  </div>
+  <button id="animate-button">Start</button>
+
+  <script>
+    const config = {
+      width: 100,
+      height: 100,
+      padding: 5,
+      showCharacter: false,
+    };
+    const char1 = HanziWriter.create('character-target-1', '你', config);
+    const char2 = HanziWriter.create('character-target-2', '好', config);
+
+    // 使用 onComplete 回调函数方式
+    function chainAnimations() {
+      var delayBetweenAnimations = 1000;
+      char1.animateCharacter({
+        onComplete: function () {
+          setTimeout(() => {
+            char2.animateCharacter();
+          }, delayBetweenAnimations);
+        }
+      });
+    }
+
+    // 使用 promise 方式
+    async function chainAnimations1() {
+      const writerList = [char1, char2];
+      for(const char of writerList) {
+        await char.animateCharacter();
+      }
+    }
+
+    const btn = document.getElementById('animate-button');
+    btn.addEventListener('click', chainAnimations1);
+  </script>
+</body>
+</html>

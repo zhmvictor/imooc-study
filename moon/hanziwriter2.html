@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.0/dist/hanzi-writer.min.js"></script>
+</head>
+<body>
+  <div id="character-target-div"></div>
+  <script>
+    const char = HanziWriter.create('character-target-div', '码', {
+      width: 150,
+      height: 150,
+      showCharacter: false,
+      padding: 5,
+    });
+
+    char.quiz({
+      onMistake(strokeData) {},
+      onCorrectStroke(strokeData) {},
+      onComplete(summaryData) {},
+    });
+
+    
+  </script>
+</body>
+</html>

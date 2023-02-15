@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hanzi Writer 基本使用</title>
+  <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.0/dist/hanzi-writer.min.js"></script>
+</head>
+<body>
+  <div id="character-target-div"></div>
+  <button id="animate-button">动画</button>
+  <script>
+    // 汉字配置
+    const config = {
+      with: 150,
+      height: 150,
+      padding: 5,
+      // 是否显示汉字轮廓
+      showOutline: true,
+      // 汉字颜色
+      strokeColor: '#ee00ff',
+      // 偏旁部首颜色
+      radicalColor: '#337ab7',
+      // 汉字动画播放速度：5x normal speed（5倍速正常速度）
+      strokeAnimationSpeed: 5,
+      // milliseconds（毫秒）
+      delayBetweenStrokes: 50,
+      // 循环动画播放间隔，单位毫秒，默认 2000ms
+      delayBetweenLoops: 3000,
+      // 是否显示汉字，默认 true
+      showCharacter: false,
+    };
+    // 创建汉字
+    const writer = HanziWriter.create('character-target-div', '轮', config);
+    // const btn = document.getElementById('animate-button');
+    // btn.addEventListener('click', () => {
+    //   // animateCharacter 方法使汉字按照笔画生成动画
+    //   writer.animateCharacter();
+    // });
+    // 调用 loopCharacterAnimation 方法开启循环动画
+    // writer.loopCharacterAnimation();
+    // 调用 quiz 方法手写汉字
+    writer.quiz();
+  </script>
+</body>
+</html>
